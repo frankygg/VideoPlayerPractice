@@ -39,16 +39,15 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         searchButton.layer.borderWidth = 1
         searchButton.layer.borderColor = UIColor.gray.cgColor
-//        let url = URL(string: "nothing")!
-//
-//        player = AVPlayer(url: url)
-//        playerLayer = AVPlayerLayer(player: player)
-//        playerLayer.videoGravity = .resize
-//        player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
-//        addTimeOberver()
-//                playerLayer.frame = videoView.bounds
-//
-//        videoView.layer.addSublayer(playerLayer)
+        let url = URL(string: "nothing")!
+
+        player = AVPlayer(url: url)
+        playerLayer = AVPlayerLayer(player: player)
+        playerLayer.videoGravity = .resize
+        player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
+        addTimeOberver()
+
+        videoView.layer.addSublayer(playerLayer)
         
 self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         
@@ -57,7 +56,7 @@ self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStri
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-//        playerLayer.frame = videoView.bounds
+        playerLayer.frame = videoView.bounds
     }
     
     func addTimeOberver() {
@@ -242,7 +241,6 @@ noVideoLabel.textColor = UIColor.gray
 
             player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
             addTimeOberver()
-            playerLayer.frame = videoView.bounds
 
             videoView.layer.addSublayer(playerLayer)
 //
