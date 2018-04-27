@@ -27,7 +27,7 @@ class ViewController: UIViewController {
         playerLayer = AVPlayerLayer(player: player)
         playerLayer.videoGravity = .resize
         player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
-        
+        addTimeOberver()
         videoView.layer.addSublayer(playerLayer)
         
         
@@ -44,7 +44,12 @@ class ViewController: UIViewController {
         let mainQueue = DispatchQueue.main
         _ = player.addPeriodicTimeObserver(forInterval: interval, queue: mainQueue, using: {    [weak self] time in
             
-//            guard let currentItem = self?
+            guard let currentItem = self?.player.currentItem else {return}
+            
+            self?.timeSlider.maximumValue = Float(currentItem.duration.seconds)
+            self?.timeSlider.minimumValue = 0
+            self?.timeSlider.value = Float(currentItem.currentTime().seconds)
+            self?.currentTimeLabel.text = self?.getTimeString(from: currentItem.currentTime())
         })
     }
     
@@ -87,6 +92,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func sliderValueChanged(_ sender: UISlider) {
+        player.seek(to: CMTimeMake(Int64(sender.value * 1000), 1000))
         
     }
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
