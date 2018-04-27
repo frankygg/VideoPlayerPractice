@@ -81,6 +81,9 @@
                                             <constraint firstAttribute="height" constant="24" id="U1R-cV-ZXB"/>
                                         </constraints>
                                         <state key="normal" image="volume_up"/>
+                                        <connections>
+                                            <action selector="volumeChanged:" destination="BYZ-38-t0r" eventType="touchUpInside" id="aq7-zp-zzc"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HzT-Qe-YvO">
                                         <rect key="frame" x="303" y="96" width="24" height="24"/>
@@ -140,7 +143,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="136.80000000000001" y="132.68365817091455"/>
+            <point key="canvasLocation" x="-540" y="139"/>
         </scene>
     </scenes>
     <resources>

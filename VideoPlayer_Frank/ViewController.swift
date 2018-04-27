@@ -17,7 +17,7 @@ class ViewController: UIViewController {
     var player: AVPlayer!
     var playerLayer: AVPlayerLayer!
     var isVideoPlaying = false
-    
+    var isMuted = false
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -114,5 +114,17 @@ class ViewController: UIViewController {
 
         }
     }
+    
+    @IBAction func volumeChanged(_ sender: UIButton) {
+        if isMuted {
+            player.isMuted = false
+            sender.setImage(#imageLiteral(resourceName: "volume_up"), for: .normal)
+        } else {
+            player.isMuted = true
+            sender.setImage(#imageLiteral(resourceName: "volume_off"), for: .normal)
+        }
+        isMuted = !isMuted
+    }
+    
 }
 
