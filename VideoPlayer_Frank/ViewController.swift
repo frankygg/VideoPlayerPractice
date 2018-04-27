@@ -9,7 +9,11 @@
 import UIKit
 import AVFoundation
 class ViewController: UIViewController {
-
+    @IBOutlet weak var noVideoLabel: UILabel!
+    @IBOutlet weak var searchedUrl: UITextField!
+    
+    @IBOutlet weak var searchView: UIView!
+    @IBOutlet weak var searchButton: UIButton!
     @IBOutlet weak var muteButton: UIButton!
     @IBOutlet weak var backButton: UIButton!
     
@@ -27,20 +31,24 @@ class ViewController: UIViewController {
     var isVideoPlaying = false
     var isMuted = false
     var isFullScreen = false
+    var lastlayer: CALayer?
     var fullScreenAnimationDuration: TimeInterval {
         return 0.15
     }
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        let url = URL(string: "https://s3-ap-northeast-1.amazonaws.com/mid-exam/Video/taeyeon.mp4")!
-        
-        player = AVPlayer(url: url)
-        playerLayer = AVPlayerLayer(player: player)
-        playerLayer.videoGravity = .resize
-        player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
-        addTimeOberver()
-        videoView.layer.addSublayer(playerLayer)
+        searchButton.layer.borderWidth = 1
+        searchButton.layer.borderColor = UIColor.gray.cgColor
+//        let url = URL(string: "nothing")!
+//
+//        player = AVPlayer(url: url)
+//        playerLayer = AVPlayerLayer(player: player)
+//        playerLayer.videoGravity = .resize
+//        player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
+//        addTimeOberver()
+//                playerLayer.frame = videoView.bounds
+//
+//        videoView.layer.addSublayer(playerLayer)
         
 self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         
@@ -49,7 +57,7 @@ self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStri
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        playerLayer.frame = videoView.bounds
+//        playerLayer.frame = videoView.bounds
     }
     
     func addTimeOberver() {
@@ -157,17 +165,22 @@ self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStri
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.orientation.isLandscape {
             self.navigationController?.setNavigationBarHidden(true, animated: false)
-            
+            self.searchView.isHidden = true
             fullScreenbutton.setImage(#imageLiteral(resourceName: "full_screen_exit"), for: .normal)
             changeTint(UIColor.white)
             isFullScreen = false
-           
+           videoView.backgroundColor = UIColor.black
+            noVideoLabel.textColor = UIColor.white
             print("Landscape")
         } else {
             self.navigationController?.setNavigationBarHidden(false, animated: false)
             fullScreenbutton.setImage(#imageLiteral(resourceName: "full_screen_button"), for: .normal)
             changeTint(UIColor.black)
             isFullScreen = true
+            videoView.backgroundColor = UIColor.white
+
+            self.searchView.isHidden = false
+noVideoLabel.textColor = UIColor.gray
 
             print("Portrait")
         }
@@ -215,5 +228,34 @@ self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStri
         
         
     }
+    
+    @IBAction func searchAction(_ sender: Any) {
+
+        guard let search = searchedUrl.text , let url = URL(string: search) else { return }
+        
+        //
+        if AVAsset(url: url).isPlayable {
+
+            player = AVPlayer(url: url)
+            playerLayer = AVPlayerLayer(player: player)
+            playerLayer.videoGravity = .resize
+
+            player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
+            addTimeOberver()
+            playerLayer.frame = videoView.bounds
+
+            videoView.layer.addSublayer(playerLayer)
+//
+//            print("----------- playable")
+        }else {
+            print("crashed!!!!!!!!!!")
+            videoView.layer.addSublayer(noVideoLabel.layer)
+
+        }
+        
+       
+        
+    }
+    
 }
 
