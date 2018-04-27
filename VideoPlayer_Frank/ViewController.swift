@@ -10,6 +10,14 @@ import UIKit
 import AVFoundation
 class ViewController: UIViewController {
 
+    @IBOutlet weak var muteButton: UIButton!
+    @IBOutlet weak var backButton: UIButton!
+    
+    @IBOutlet weak var playButton: UIButton!
+    
+    @IBOutlet weak var forButton: UIButton!
+    
+    @IBOutlet weak var fullScreenbutton: UIButton!
     @IBOutlet weak var timeSlider: UISlider!
     @IBOutlet weak var currentTimeLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
@@ -18,6 +26,10 @@ class ViewController: UIViewController {
     var playerLayer: AVPlayerLayer!
     var isVideoPlaying = false
     var isMuted = false
+    var isFullScreen = false
+    var fullScreenAnimationDuration: TimeInterval {
+        return 0.15
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -64,9 +76,17 @@ self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStri
         if isVideoPlaying {
             player.pause()
             sender.setImage(#imageLiteral(resourceName: "play_button"), for: .normal)
+            if isFullScreen {
+                sender.setImage(sender.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+                sender.tintColor = UIColor.white
+            }
         }else {
             player.play()
             sender.setImage(#imageLiteral(resourceName: "stop"), for: .normal)
+            if isFullScreen {
+                sender.setImage(sender.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+                sender.tintColor = UIColor.white
+            }
         }
         isVideoPlaying = !isVideoPlaying
     }
@@ -120,23 +140,80 @@ self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStri
         if isMuted {
             player.isMuted = false
             sender.setImage(#imageLiteral(resourceName: "volume_up"), for: .normal)
+            if isFullScreen {
+                sender.setImage(sender.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+                sender.tintColor = UIColor.white
+            }
         } else {
             player.isMuted = true
             sender.setImage(#imageLiteral(resourceName: "volume_off"), for: .normal)
+            if isFullScreen {
+                sender.setImage(sender.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+                sender.tintColor = UIColor.white
+            }
         }
         isMuted = !isMuted
     }
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         if UIDevice.current.orientation.isLandscape {
             self.navigationController?.setNavigationBarHidden(true, animated: false)
-
+            
+            fullScreenbutton.setImage(#imageLiteral(resourceName: "full_screen_exit"), for: .normal)
+            changeTint(UIColor.white)
+            isFullScreen = false
+           
             print("Landscape")
         } else {
             self.navigationController?.setNavigationBarHidden(false, animated: false)
+            fullScreenbutton.setImage(#imageLiteral(resourceName: "full_screen_button"), for: .normal)
+            changeTint(UIColor.black)
+            isFullScreen = true
 
             print("Portrait")
         }
+
     }
     
+    
+    @IBAction func fullscreenPressed(_ sender: UIButton) {
+        if isFullScreen {
+            sender.setImage(#imageLiteral(resourceName: "full_screen_button"), for: .normal)
+            changeTint(UIColor.black)
+
+            let value = UIInterfaceOrientation.portrait.rawValue
+            UIDevice.current.setValue(value, forKey: "orientation")
+        }else {
+            let value = UIInterfaceOrientation.landscapeLeft.rawValue
+            UIDevice.current.setValue(value, forKey: "orientation")
+            sender.setImage(#imageLiteral(resourceName: "full_screen_exit"), for: .normal)
+
+            changeTint(UIColor.white)
+        }
+        isFullScreen = !isFullScreen
+    }
+    
+    func changeTint(_ color: UIColor) {
+        muteButton.setImage(muteButton.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+        muteButton.tintColor = color
+        
+        playButton.setImage(playButton.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+        playButton.tintColor = color
+        
+        forButton.setImage(forButton.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+        forButton.tintColor = color
+        
+        backButton.setImage(backButton.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+        backButton.tintColor = color
+        
+        fullScreenbutton.setImage(fullScreenbutton.imageView?.image?.withRenderingMode(.alwaysTemplate), for: .normal)
+        fullScreenbutton.tintColor = color
+        
+        durationLabel.textColor = color
+        
+        currentTimeLabel.textColor = color
+        
+        
+        
+    }
 }
 

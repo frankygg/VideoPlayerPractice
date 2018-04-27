@@ -92,6 +92,9 @@
                                             <constraint firstAttribute="width" constant="24" id="sgk-qj-lsE"/>
                                         </constraints>
                                         <state key="normal" image="full_screen_button"/>
+                                        <connections>
+                                            <action selector="fullscreenPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cNx-qX-l2W"/>
+                                        </connections>
                                     </button>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="3BY-ZG-6Fv">
                                         <rect key="frame" x="57" y="36" width="261" height="31"/>
@@ -137,8 +140,13 @@
                     </view>
                     <navigationItem key="navigationItem" title="Video Player" id="ZsR-yi-43H"/>
                     <connections>
+                        <outlet property="backButton" destination="cUJ-BO-Gt4" id="hTh-PC-s80"/>
                         <outlet property="currentTimeLabel" destination="p5c-vH-5Mz" id="Jet-K7-jNf"/>
                         <outlet property="durationLabel" destination="Wre-P2-ofd" id="NsA-Pe-aZ4"/>
+                        <outlet property="forButton" destination="tGf-Vv-QFy" id="FAn-nX-baD"/>
+                        <outlet property="fullScreenbutton" destination="HzT-Qe-YvO" id="eak-iM-2nX"/>
+                        <outlet property="muteButton" destination="yqm-7H-IT1" id="2sq-Ru-ZIg"/>
+                        <outlet property="playButton" destination="2qW-vL-obR" id="Dyb-GH-jH6"/>
                         <outlet property="timeSlider" destination="3BY-ZG-6Fv" id="AHF-ya-NWk"/>
                         <outlet property="videoView" destination="e0Z-Bn-eCF" id="BQw-EU-RJv"/>
                     </connections>
