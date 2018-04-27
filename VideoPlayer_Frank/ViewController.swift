@@ -30,6 +30,7 @@ class ViewController: UIViewController {
         addTimeOberver()
         videoView.layer.addSublayer(playerLayer)
         
+self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         
 
     }
@@ -124,6 +125,17 @@ class ViewController: UIViewController {
             sender.setImage(#imageLiteral(resourceName: "volume_off"), for: .normal)
         }
         isMuted = !isMuted
+    }
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        if UIDevice.current.orientation.isLandscape {
+            self.navigationController?.setNavigationBarHidden(true, animated: false)
+
+            print("Landscape")
+        } else {
+            self.navigationController?.setNavigationBarHidden(false, animated: false)
+
+            print("Portrait")
+        }
     }
     
 }
