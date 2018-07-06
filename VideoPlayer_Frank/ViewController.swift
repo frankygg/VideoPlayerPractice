@@ -27,11 +27,12 @@ class ViewController: UIViewController {
     @IBOutlet weak var durationLabel: UILabel!
     @IBOutlet weak var videoView: UIView!
     var player: AVPlayer!
-    var playerLayer: AVPlayerLayer!
+    var playerLayer: AVPlayerLayer?
     var isVideoPlaying = false
     var isMuted = false
     var isFullScreen = false
     var lastlayer: CALayer?
+    var playerPeriodTimeOberver: Any?
     var fullScreenAnimationDuration: TimeInterval {
         return 0.15
     }
@@ -39,30 +40,27 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         searchButton.layer.borderWidth = 1
         searchButton.layer.borderColor = UIColor.gray.cgColor
-        let url = URL(string: "nothing")!
 
-        player = AVPlayer(url: url)
-        playerLayer = AVPlayerLayer(player: player)
-        playerLayer.videoGravity = .resize
-        player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
-        addTimeOberver()
-
-        videoView.layer.addSublayer(playerLayer)
+        playButton.isEnabled = false
+        muteButton.isEnabled = false
+        forButton.isEnabled = false
+        backButton.isEnabled = false
         
-self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        self.navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
         
 
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        playerLayer.frame = videoView.bounds
+        guard let playerlayer = playerLayer else { return}
+        playerlayer.frame = videoView.bounds
     }
     
     func addTimeOberver() {
         let interval = CMTime(seconds: 0.5, preferredTimescale: CMTimeScale(NSEC_PER_SEC))
         let mainQueue = DispatchQueue.main
-        _ = player.addPeriodicTimeObserver(forInterval: interval, queue: mainQueue, using: {    [weak self] time in
+        playerPeriodTimeOberver = player.addPeriodicTimeObserver(forInterval: interval, queue: mainQueue, using: {    [weak self] time in
             
             guard let currentItem = self?.player.currentItem else {return}
             
@@ -232,22 +230,45 @@ noVideoLabel.textColor = UIColor.gray
 
         guard let search = searchedUrl.text , let url = URL(string: search) else { return }
         
-        //
+        if playerLayer != nil {
+            playerLayer?.removeFromSuperlayer()
+            playerLayer = nil
+            timeSlider.value = Float(0.0)
+            playButton.setImage(#imageLiteral(resourceName: "play_button"), for: .normal)
+            muteButton.setImage(#imageLiteral(resourceName: "volume_up"), for: .normal)
+            currentTimeLabel.text = "00:00"
+            isMuted = false
+            isVideoPlaying = false
+            
+        }
+        if let observer = playerPeriodTimeOberver {
+            player.removeTimeObserver(observer)
+            player.currentItem?.removeObserver(self, forKeyPath: "duration")
+        }
+        
         if AVAsset(url: url).isPlayable {
-
+            playButton.isEnabled = true
+            muteButton.isEnabled = true
+            forButton.isEnabled = true
+            backButton.isEnabled = true
+            
             player = AVPlayer(url: url)
             playerLayer = AVPlayerLayer(player: player)
-            playerLayer.videoGravity = .resize
+            playerLayer?.videoGravity = .resize
 
             player.currentItem?.addObserver(self, forKeyPath: "duration", options: [.new, .initial], context: nil)
             addTimeOberver()
 
-            videoView.layer.addSublayer(playerLayer)
+            videoView.layer.addSublayer(playerLayer!)
 //
 //            print("----------- playable")
         }else {
+            playButton.isEnabled = false
+            muteButton.isEnabled = false
+            forButton.isEnabled = false
+            backButton.isEnabled = false
             print("crashed!!!!!!!!!!")
-            videoView.layer.addSublayer(noVideoLabel.layer)
+            
 
         }
         
